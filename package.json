@@ -1,0 +1,26 @@
+{
+  "name": "rentsnap_backend",
+  "version": "1.0.0",
+  "description": "backend for rental finding app",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "rental",
+    "webapp"
+  ],
+  "author": "sklfgroup",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt-nodejs": "^0.0.3",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.1.4",
+    "err": "^2.1.12",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^6.6.4",
+    "multer": "^1.4.5-lts.1"
+  }
+}
