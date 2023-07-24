@@ -1,14 +1,14 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const config = require("./config/database");
-const multer = require('multer')
-const upload = multer({ dest: 'uploads/' })
-
+const fileUpload = require('express-fileupload')
+const url = require('url')
 const bodyParser = require("body-parser");
 const router = express.Router();
-const authentication = require("./routes/authentication")(router);
-const propertyRoute = require("./routes/propertyRoute")(router);
-const userManagementRoute = require("./routes/userManagementRoute")(router);
+
+// express.static(root, [options])
+
+
 
 mongoose.Promise = global.Promise;
 mongoose
@@ -23,23 +23,38 @@ mongoose
   });
 
 const app = express();
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
 var cors = require("cors");
+const path = require("path");
+
+app.use('/static', express.static(path.join(__dirname, 'public')))
 
 
-// app.use(
-//   cors({
-//     origin: "http://localhost:4200",
-//   })
-// );
+app.use(
+  cors({
+    origin: "http://localhost:4200",
+  })
+);
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+// file save configuration
+app.use(fileUpload())
+
+
+const authentication = require("./routes/authentication")(router);
+const propertyRoute = require("./routes/propertyRoute")(router);
+const userManagementRoute = require("./routes/userManagementRoute")(router);
+
+
 
 app.use("/property", propertyRoute); //when placed below authentication, you have to provide a token
 
 app.use("/authentication", authentication);
 
 app.use("/user", userManagementRoute);
+
+
+
 
 // app.get("/", (req, res) => {
 //   res.send("my name is jon");

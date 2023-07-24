@@ -237,22 +237,20 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    required: true,
     validate: passwordValidator,
   },
 
   role: {
     type: String,
-    required: true,
     validate: roleValidator,
   },
   image: { 
     type: String,
-    validator: uploadImage },
+     },
   lastUpdate: { type: Date },
   status: {
     type: Boolean,
-    required: true,
+    default: false,
   },
 });
 

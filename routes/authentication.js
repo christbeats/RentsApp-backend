@@ -1,8 +1,9 @@
 const User = require("../models/userSchema")
 const jwt = require('jsonwebtoken');
-
+const fs = require('fs')
+const Helpers = require('../helpers/Helper')
+const uploadedFile = require('express-fileupload')
 const config = require('../config/database');
-var path = require("path");
 var crypto = require('crypto')
 
 
@@ -11,7 +12,13 @@ require('dotenv').config()
 
 module.exports = (router) => {
 
-    router.post('/register', (req, res) => {
+  
+    router.post('/register', 
+    /**
+   * @param {Express.Request} req
+   *  
+   */  
+    async (req, res) => {
         if (!req.body.email) {
             res.json({ success: false, message: 'You must provide an  email' });
         }
@@ -38,65 +45,63 @@ module.exports = (router) => {
 
 
         else {
+
+          try {
+            
+            const imagePath = await Helpers.FileController.saveFile(req.files.image, 'uploads')
+            
+
             let user = new User({
-                email: req.body.email,
-                phoneNumber: req.body.phoneNumber,
-                username: req.body.username,
-                password: req.body.password,
-                role: 'seller',
-                image: req.body.image,
-                status: true,
-                lastUpdate: Date.now()
-            });
+              email: req.body.email,
+              phoneNumber: req.body.phoneNumber,
+              username: req.body.username,
+              password: req.body.password,
+              role: 'seller',
+              image: imagePath,
+              status: false,
+              lastUpdate: Date.now()
+          });
 
 
-            user.save((err) => {
-                if (err) {
-                    if (err.code === 11000) {
-                        res.json({ success: false, message: 'Username, email or phone number already exists' })
+          user.save((err) => {
+              if (err) {
+                  if (err.code === 11000) {
+                      res.json({ success: false, message: 'Username, email or phone number already exists' })
+                  }
+                  else {
+                      if (err.errors.username) {
+                          res.json({ success: false, message: err.errors.username.message })
+                      }
+                      else if (err.errors.phoneNumber) {
+                          res.json({ success: false, message: err.errors.phoneNumber.message })
+                      }
 
-                    }
-                    else {
+                      else if (err.errors.email) {
+                          res.json({ success: false, message: err.errors.email.message })
+                      }
+                      else if (err.errors.role) {
+                          res.json({ success: false, message: err.errors.role.message })
+                      }
+                      else  {
+                          res.json({ success: false, message: err.errors })
+                      }
+                  }
+              }
 
-                        if (err.errors.username) {
-                            res.json({ success: false, message: err.errors.username.message })
-
-                        }
-
-                        else if (err.errors.phoneNumber) {
-                            res.json({ success: false, message: err.errors.phoneNumber.message })
-
-                        }
-
-                        else if (err.errors.email) {
-                            res.json({ success: false, message: err.errors.email.message })
-
-                        }
-
-
-                        else if (err.errors.role) {
-                            res.json({ success: false, message: err.errors.role.message })
-
-                        }
-
-
-                        else if (err.errors.password) {
-                            res.json({ success: false, message: err.errors.password.message })
-
-                        }
+              else {
+                res.json({ success: true, message: 'User registered successfully' });
+              }
 
 
-
-                    }
-                }
-
-                else {
-                    res.json({ success: true, message: 'User registered successfully' });
-
-                }
+          })
 
 
-            })
+          } catch (error) {
+            console.log(error)
+            res.json({ success: false, message: 'Error when try to save the image!' });
+          }
+
+            
 
 
         }

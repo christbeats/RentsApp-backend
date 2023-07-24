@@ -218,30 +218,21 @@ const propertySchema = new Schema({
     required: true,
     default: false,
   },
-  // featuredImage: {
-  //   type: String,
-  //   validator: uploadImage,
-  // },
-  // image1: {
-  //   type: String,
-  //   validator: uploadImage,
-  // },
-  // image2: {
-  //   type: String,
-  //   validator: uploadImage,
-  // },
-  // image3: {
-  //   type: String,
-  //   validator: uploadImage,
-  // },
-  // image4: {
-  //   type: String,
-  //   validator: uploadImage,
-  // },
-  // video: {
-  //   type: String,
-  //   validator: uploadVideo,
-  // },
+  featuredImage: {
+    type: String,
+  },
+  image1: {
+    type: String,
+  },
+  image2: {
+    type: String,
+  },
+  image3: {
+    type: String,
+  },
+  image4: {
+    type: String,
+  },
 
   lastUpdate: { type: Date },
 });
